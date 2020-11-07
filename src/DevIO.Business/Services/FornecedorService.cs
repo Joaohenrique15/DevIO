@@ -34,17 +34,18 @@ namespace DevIO.Business.Services
             await _fornecedorRepository.Adicionar(fornecedor);
         }
 
-        public async Task Atualizar(Fornecedor fornecedor)
+        public async Task<bool> Atualizar(Fornecedor fornecedor)
         {
-            if (!ExecutarValidacao(new FornecedorValidation(), fornecedor)) return;
+            if (!ExecutarValidacao(new FornecedorValidation(), fornecedor)) return false;
 
             if (_fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento && f.Id != fornecedor.Id).Result.Any())
             {
                 Notificar("Já existe um fornecedor com este documento infomado.");
-                return;
+                return false;
             }
 
             await _fornecedorRepository.Atualizar(fornecedor);
+            return true;
         }
 
         public async Task AtualizarEndereco(Endereco endereco)
